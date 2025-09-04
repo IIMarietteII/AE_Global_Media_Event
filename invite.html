@@ -1,91 +1,72 @@
+# invite.html (이미지 원본 비율 유지, 화면 너비 기준 최대 100%)
+
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>초대장</title>
-<style>
-:root { --w: 640px; }
-* { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif; background: #fafafa; }
-.wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-.card { width: min(100%, var(--w)); background: #fff; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.08); overflow: hidden; }
-.inner { padding: 0; }
-img { display:block; width:100%; height:auto; border:0; }
-table { width:100%; border-collapse: collapse; }
-td { padding:0; }
-a { text-decoration: none; }
-.foot { text-align:center; color:#777; font-size:12px; padding: 12px 0 4px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>초대장</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #fff; }
+    .wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    .inner { padding: 0; }
+    img { display: block; height: auto; max-width: 100%; } /* ✅ 원본 비율 유지 + 최대 100% */
+    table { border-collapse: collapse; border: none; }
+    td { padding: 0; border: none; }
+    a { text-decoration: none; }
+  </style>
 </head>
 <body>
-<div class="wrap">
-<div class="card">
-<div class="inner">
-<img id="top" alt="top" />
-<table role="presentation" cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td style="width:34%"><img id="mid_left" alt="mid left" /></td>
-<td style="width:36.333%">
-<a id="btn_link" href="#" onclick="return false;">
-<img id="mid_btn" alt="button" />
-</a>
-</td>
-<td style="width:29.667%"><img id="mid_right" alt="mid right" /></td>
-</tr>
-</table>
-<img id="bot" alt="bottom" />
-</div>
-<div class="foot">assets/invite/current의 최신 이미지를 표시합니다.</div>
-</div>
-</div>
+  <div class="wrap">
+    <div class="inner">
+      <img id="top" alt="top" />
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><img id="mid_left" alt="mid left" /></td>
+          <td>
+            <a id="btn_link" href="#" onclick="return false;">
+              <img id="mid_btn" alt="button" />
+            </a>
+          </td>
+          <td><img id="mid_right" alt="mid right" /></td>
+        </tr>
+      </table>
+      <img id="bot" alt="bottom" />
+    </div>
+  </div>
 
+  <script>
+    (function(){
+      const RAW_BASE = 'https://raw.githubusercontent.com/IIMarietteII/AE_Global_Media_Event/main/assets/invite/current';
+      const byId = (id) => document.getElementById(id);
 
-<script>
-(function(){
-  // ✅ raw.githubusercontent.com 경로 사용 (프로젝트 페이지 경로 이슈 회피)
-  const RAW_BASE = 'https://raw.githubusercontent.com/IIMarietteII/AE_Global_Media_Event/main/assets/invite/current';
-  const byId = (id) => document.getElementById(id);
+      const cfgUrl = `${RAW_BASE}/config.json`;
+      fetch(cfgUrl, { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : { register_url: '', updated_at: Date.now() })
+        .then(cfg => {
+          const ver = encodeURIComponent(cfg.updated_at || Date.now());
+          byId('top').src        = `${RAW_BASE}/invite_top.png?v=${ver}`;
+          byId('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
+          byId('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
+          byId('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
+          byId('bot').src        = `${RAW_BASE}/invite_bot.png?v=${ver}`;
 
-  // config.json에서 updated_at을 버전 파라미터로 써서 캐시 무력화
-  const cfgUrl = `${RAW_BASE}/config.json`;
-  fetch(cfgUrl, { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : { register_url: '', updated_at: Date.now() })
-    .then(cfg => {
-      const ver = encodeURIComponent(cfg.updated_at || Date.now());
-
-      byId('top').src        = `${RAW_BASE}/invite_top.png?v=${ver}`;
-      byId('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
-      byId('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
-      byId('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
-      byId('bot').src        = `${RAW_BASE}/invite_bot.png?v=${ver}`;
-
-      const a = byId('btn_link');
-      const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
-      if (url) { a.href = url; a.onclick = null; }
-    })
-    .catch(() => {
-      // config.json 실패해도 이미지만이라도 보이도록
-      const v = Date.now();
-      byId('top').src        = `${RAW_BASE}/invite_top.png?v=${v}`;
-      byId('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
-      byId('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
-      byId('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
-      byId('bot').src        = `${RAW_BASE}/invite_bot.png?v=${v}`;
-    });
-})();
-</script>
-
-
-
-// 버튼 링크 구성
-fetch(srcs.config, { cache: 'no-store' }).then(r => r.ok ? r.json() : { register_url: '' }).then(cfg => {
-const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
-const a = byId('btn_link');
-if (url) { a.href = url; a.onclick = null; }
-}).catch(() => {/* ignore */});
-})();
-</script>
+          const a = byId('btn_link');
+          const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
+          if (url) { a.href = url; a.onclick = null; }
+        })
+        .catch(() => {
+          const v = Date.now();
+          byId('top').src        = `${RAW_BASE}/invite_top.png?v=${v}`;
+          byId('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
+          byId('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
+          byId('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
+          byId('bot').src        = `${RAW_BASE}/invite_bot.png?v=${v}`;
+        });
+    })();
+  </script>
 </body>
-
 </html>
+```
