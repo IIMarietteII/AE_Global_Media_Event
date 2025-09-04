@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Invite 이미지 업로드(관리자)</title>
+<style>
+:root { --w: 640px; }
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif; line-height: 1.45; padding: 20px; }
+h1 { font-size: 22px; margin: 0 0 14px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 980px; margin: 0 auto; }
+fieldset { border: 1px solid #ddd; border-radius: 12px; padding: 16px; }
+legend { font-weight: 800; padding: 0 6px; }
+label { display:block; margin: 8px 0 6px; font-weight:600; }
+input[type="text"], input[type="password"], input[type="url"] { width: 100%; padding: 10px; border:1px solid #ccc; border-radius: 10px; }
+input[type="file"] { width: 100%; }
+button { cursor: pointer; border: 0; background: #111; color: #fff; padding: 10px 14px; border-radius: 10px; font-weight: 700; }
+button.secondary { background: #555; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.preview-wrap { display:flex; justify-content:center; align-items:flex-start; padding: 12px; background:#f8f8f8; border-radius:12px; overflow:auto; }
+.invite { width: var(--w); max-width: 100%; }
+.hint { color:#666; font-size: 12px; }
+.status { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background:#111; color:#eee; padding:12px; border-radius:8px; height: 140px; overflow:auto; }
+.actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+a.inline { color:#06f; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="grid">
+<h1>Invite 이미지 업로드 → GitHub Pages에 적용</h1>
+<p>5개 이미지를 업로드하고 <b>Publish</b>를 누르면 레포지토리의 <code>assets/invite/current/</code>에 커밋됩니다. <code>invite.html</code>은 그 경로의 이미지를 자동으로 불러옵니다.</p>
+
+
+<fieldset>
+<legend>GitHub 설정</legend>
+<div class="row">
+<div>
+<label>Owner (사용자명 또는 Org)</label>
+<input id="owner" type="text" placeholder="예: IIMarietteII" />
+</div>
+<div>
+<label>Repo</label>
+<input id="repo" type="text" placeholder="예: AE_Global_Media_Event" />
+</div>
+</div>
+<div class="row">
+<div>
+<label>Branch</label>
+<input id="branch" type="text" value="main" />
+</div>
+<div>
+<label>Target Path</label>
+<input id="path" type="text" value="assets/invite/current" />
+</div>
+</div>
+<label>Personal Access Token (repo/public_repo 권한). 브라우저에만 저장됩니다.</label>
+<input id="token" type="password" placeholder="ghp_..." />
+<div class="actions" style="margin-top:8px;">
+<button id="saveLocal" class="secondary">설정 저장</button>
+<button id="clearLocal" class="secondary">설정 초기화</button>
+</div>
+<p class="hint">* 보안상 토큰을 코드에 하드코딩하지 마세요. 이 페이지는 토큰을 <b>localStorage</b>에만 저장/사용합니다.</p>
+</fieldset>
+
+
+<fieldset>
+<legend>버튼 링크(선택)</legend>
+<label>초대장 중앙 버튼 클릭 시 이동할 URL</label>
+<input id="btnUrl" type="url" placeholder="https://example.com/register" />
+<p class="hint">입력하면 <code>config.json</code>에 저장되어 <code>invite.html</code>에서 사용됩니다.</p>
+</fieldset>
+
+
+<fieldset>
+<legend>이미지 5개 선택</legend>
+<div class="row">
+<div>
+<label>Top (invite_top.png)</label>
+<input id="top" type="file" accept="image/*" />
+</div>
+<div>
+<label>Mid Left (invite_mid_left.png)</label>
+<input id="midLeft" type="file" accept="image/*" />
+</div>
+</div>
+<div class="row">
+</html>
