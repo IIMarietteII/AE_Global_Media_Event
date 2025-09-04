@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -5,104 +6,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>초대장</title>
   <style>
-    /* 기본 스타일: 복사/붙여넣기 시에도 최대한 보존되는 인라인 스타일 사용 */
+    /* 고정폭/최대폭 제거: 항상 컨테이너(브라우저/메일클라이언트) 너비 100%로만 확장 */
     * { box-sizing: border-box; }
     html, body { margin:0; padding:0; background:#fff; }
-    img { display:block; height:auto; max-width:100%; border:0; }
-    table { border-collapse:collapse; border:none; }
+    table { border-collapse:collapse; border:none; width:100%; }
     td { padding:0; border:none; }
+    img { display:block; height:auto; width:100%; border:0; }
     a { text-decoration:none; }
+    .outer { width:100%; margin:0 auto; }
   </style>
 </head>
 <body>
-  <!-- Fluid wrapper (mobile) + Outlook에서 600px 고정 -->
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto; max-width:600px;">
+  <!-- 전체 래퍼: 고정폭/최대폭 없음 -->
+  <table role="presentation" class="outer" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
-      <td style="padding:0;">
-        <!--[if mso]>
-        <table role="presentation" width="600" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td>
-        <![endif]-->
+      <td>
+        <!-- TOP: 항상 100% -->
+        <img id="top" alt="top">
 
-        <!-- TOP -->
-        <img id="top" alt="" width="600" style="width:100%; height:auto; border:0;" />
-
-        <!-- MID row split into 3 columns: only middle piece is linked -->
-        <!--[if mso]>
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0">
+        <!-- MID: 3열 — 각 열은 비율(%)로 유연 배분. 비율은 이미지 원본 가로폭 비율로 JS가 주입 -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
           <tr>
-            <td width="204" style="padding:0;"><img id="mso_mid_left" alt="" width="204" height="54" style="display:block; border:0;"></td>
-            <td width="218" style="padding:0;">
-              <a id="mso_btn_link" href="#" target="_blank" style="text-decoration:none; display:block;">
-                <img id="mso_mid_btn" alt="참가 등록" width="218" height="54" style="display:block; border:0;">
+            <td id="mid_left_td" style="width:34%;"><img id="mid_left" alt="left"></td>
+            <td id="mid_btn_td" style="width:36.333%;">
+              <a id="btn_link" href="#" target="_blank" style="display:block;">
+                <img id="mid_btn" alt="참가 등록">
               </a>
             </td>
-            <td width="178" style="padding:0;"><img id="mso_mid_right" alt="" width="178" height="54" style="display:block; border:0;"></td>
+            <td id="mid_right_td" style="width:29.667%;"><img id="mid_right" alt="right"></td>
           </tr>
         </table>
-        <![endif]-->
-
-        <!--[if !mso]><!-- -->
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
-          <tr>
-            <td style="padding:0; width:34%;"><img id="mid_left" alt="" style="width:100%; height:auto; border:0;"></td>
-            <td style="padding:0; width:36.333%;">
-              <a id="btn_link" href="#" target="_blank" style="text-decoration:none; display:block;">
-                <img id="mid_btn" alt="참가 등록" style="width:100%; height:auto; border:0;">
-              </a>
-            </td>
-            <td style="padding:0; width:29.667%;"><img id="mid_right" alt="" style="width:100%; height:auto; border:0;"></td>
-          </tr>
-        </table>
-        <!--<![endif]-->
 
         <!-- BOT -->
-        <img id="bot" alt="" width="600" style="width:100%; height:auto; border:0;" />
-
-        <!--[if mso]></td></tr></table><![endif]-->
+        <img id="bot" alt="bottom">
       </td>
     </tr>
   </table>
 
   <script>
     (function(){
-      // 원본은 raw.githubusercontent의 current 폴더에서 불러옴
       const RAW_BASE = 'https://raw.githubusercontent.com/IIMarietteII/AE_Global_Media_Event/main/assets/invite/current';
       const $ = (id) => document.getElementById(id);
 
-      // config.json 로드 후 updated_at으로 캐시 무력화 & 버튼 링크 주입
+      // 비율(% )을 안전하게 계산: 원본 가로폭 기준으로 100% 분배
+      function setMidColumnPercents(wL, wC, wR) {
+        const total = (wL||0) + (wC||0) + (wR||0);
+        if (!total) return;
+        const pL = (wL/total*100).toFixed(3) + '%';
+        const pC = (wC/total*100).toFixed(3) + '%';
+        const pR = (wR/total*100).toFixed(3) + '%';
+        $('mid_left_td').style.width  = pL;
+        $('mid_btn_td').style.width   = pC;
+        $('mid_right_td').style.width = pR;
+      }
+
+      function preload(src) { return new Promise(res=>{ const i = new Image(); i.onload=()=>res({w:i.naturalWidth,h:i.naturalHeight}); i.onerror=()=>res({w:0,h:0}); i.src = src; }); }
+
       fetch(`${RAW_BASE}/config.json`, { cache: 'no-store' })
         .then(r => r.ok ? r.json() : { register_url:'', updated_at: Date.now() })
-        .then(cfg => {
+        .then(async (cfg) => {
           const ver = encodeURIComponent(cfg.updated_at || Date.now());
+          const srcTop   = `${RAW_BASE}/invite_top.png?v=${ver}`;
+          const srcLeft  = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
+          const srcBtn   = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
+          const srcRight = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
+          const srcBot   = `${RAW_BASE}/invite_bot.png?v=${ver}`;
 
-          // Non-MSO (웹/모바일)
-          if ($('top'))        $('top').src        = `${RAW_BASE}/invite_top.png?v=${ver}`;
-          if ($('mid_left'))   $('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
-          if ($('mid_btn'))    $('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
-          if ($('mid_right'))  $('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
-          if ($('bot'))        $('bot').src        = `${RAW_BASE}/invite_bot.png?v=${ver}`;
-          if ($('btn_link')){
-            const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '#';
-            if (url && url !== '#') { $('btn_link').href = url; }
-          }
+          // 원본 가로폭 취득 후, 열 비율 계산
+          const [mL, mC, mR] = await Promise.all([preload(srcLeft), preload(srcBtn), preload(srcRight)]);
+          setMidColumnPercents(mL.w, mC.w, mR.w);
 
-          // MSO(Outlook) 조건부 주석 내 이미지는 브라우저 DOM에 잡히지 않으므로,
-          // 복사/붙여넣기 시에도 보이도록 미리 속성을 채워 둠 (일부 환경에서는 유지됨)
-          if ($('mso_mid_left'))  $('mso_mid_left').setAttribute('src', `${RAW_BASE}/invite_mid_left.png?v=${ver}`);
-          if ($('mso_mid_btn'))   $('mso_mid_btn').setAttribute('src', `${RAW_BASE}/invite_mid_btn.png?v=${ver}`);
-          if ($('mso_mid_right')) $('mso_mid_right').setAttribute('src', `${RAW_BASE}/invite_mid_right.png?v=${ver}`);
-          if ($('mso_btn_link')){
-            const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '#';
-            if (url && url !== '#') $('mso_btn_link').setAttribute('href', url);
-          }
+          // 소스 주입 (복사/붙여넣기 시 인라인 width:100%가 유지되어 유연하게 반응)
+          $('top').src       = srcTop;
+          $('mid_left').src  = srcLeft;
+          $('mid_btn').src   = srcBtn;
+          $('mid_right').src = srcRight;
+          $('bot').src       = srcBot;
+
+          const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
+          if (url) { $('btn_link').href = url; }
         })
         .catch(() => {
           const v = Date.now();
-          if ($('top'))        $('top').src        = `${RAW_BASE}/invite_top.png?v=${v}`;
-          if ($('mid_left'))   $('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
-          if ($('mid_btn'))    $('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
-          if ($('mid_right'))  $('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
-          if ($('bot'))        $('bot').src        = `${RAW_BASE}/invite_bot.png?v=${v}`;
+          $('top').src       = `${RAW_BASE}/invite_top.png?v=${v}`;
+          $('mid_left').src  = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
+          $('mid_btn').src   = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
+          $('mid_right').src = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
+          $('bot').src       = `${RAW_BASE}/invite_bot.png?v=${v}`;
         });
     })();
   </script>
