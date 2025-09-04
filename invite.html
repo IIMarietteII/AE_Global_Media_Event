@@ -1,71 +1,110 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>초대장</title>
-<style>
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; background: #fff; }
-.wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-.inner { padding: 0; }
-img { display: block; height: auto; max-width: 100%; } /* ✅ 원본 비율 유지 + 최대 100% */
-table { border-collapse: collapse; border: none; }
-td { padding: 0; border: none; }
-a { text-decoration: none; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>초대장</title>
+  <style>
+    /* 기본 스타일: 복사/붙여넣기 시에도 최대한 보존되는 인라인 스타일 사용 */
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:#fff; }
+    img { display:block; height:auto; max-width:100%; border:0; }
+    table { border-collapse:collapse; border:none; }
+    td { padding:0; border:none; }
+    a { text-decoration:none; }
+  </style>
 </head>
 <body>
-<div class="wrap">
-<div class="inner">
-<img id="top" alt="top" />
-<table role="presentation" cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td><img id="mid_left" alt="mid left" /></td>
-<td>
-<a id="btn_link" href="#" onclick="return false;">
-<img id="mid_btn" alt="button" />
-</a>
-</td>
-<td><img id="mid_right" alt="mid right" /></td>
-</tr>
-</table>
-<img id="bot" alt="bottom" />
-</div>
-</div>
+  <!-- Fluid wrapper (mobile) + Outlook에서 600px 고정 -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto; max-width:600px;">
+    <tr>
+      <td style="padding:0;">
+        <!--[if mso]>
+        <table role="presentation" width="600" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td>
+        <![endif]-->
 
+        <!-- TOP -->
+        <img id="top" alt="" width="600" style="width:100%; height:auto; border:0;" />
 
-<script>
-(function(){
-const RAW_BASE = 'https://raw.githubusercontent.com/IIMarietteII/AE_Global_Media_Event/main/assets/invite/current';
-const byId = (id) => document.getElementById(id);
+        <!-- MID row split into 3 columns: only middle piece is linked -->
+        <!--[if mso]>
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td width="204" style="padding:0;"><img id="mso_mid_left" alt="" width="204" height="54" style="display:block; border:0;"></td>
+            <td width="218" style="padding:0;">
+              <a id="mso_btn_link" href="#" target="_blank" style="text-decoration:none; display:block;">
+                <img id="mso_mid_btn" alt="참가 등록" width="218" height="54" style="display:block; border:0;">
+              </a>
+            </td>
+            <td width="178" style="padding:0;"><img id="mso_mid_right" alt="" width="178" height="54" style="display:block; border:0;"></td>
+          </tr>
+        </table>
+        <![endif]-->
 
+        <!--[if !mso]><!-- -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+          <tr>
+            <td style="padding:0; width:34%;"><img id="mid_left" alt="" style="width:100%; height:auto; border:0;"></td>
+            <td style="padding:0; width:36.333%;">
+              <a id="btn_link" href="#" target="_blank" style="text-decoration:none; display:block;">
+                <img id="mid_btn" alt="참가 등록" style="width:100%; height:auto; border:0;">
+              </a>
+            </td>
+            <td style="padding:0; width:29.667%;"><img id="mid_right" alt="" style="width:100%; height:auto; border:0;"></td>
+          </tr>
+        </table>
+        <!--<![endif]-->
 
-const cfgUrl = `${RAW_BASE}/config.json`;
-fetch(cfgUrl, { cache: 'no-store' })
-.then(r => r.ok ? r.json() : { register_url: '', updated_at: Date.now() })
-.then(cfg => {
-const ver = encodeURIComponent(cfg.updated_at || Date.now());
-byId('top').src = `${RAW_BASE}/invite_top.png?v=${ver}`;
-byId('mid_left').src = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
-byId('mid_btn').src = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
-byId('mid_right').src = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
-byId('bot').src = `${RAW_BASE}/invite_bot.png?v=${ver}`;
+        <!-- BOT -->
+        <img id="bot" alt="" width="600" style="width:100%; height:auto; border:0;" />
 
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+  </table>
 
-const a = byId('btn_link');
-const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
-if (url) { a.href = url; a.onclick = null; }
-})
-.catch(() => {
-const v = Date.now();
-byId('top').src = `${RAW_BASE}/invite_top.png?v=${v}`;
-byId('mid_left').src = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
-byId('mid_btn').src = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
-byId('mid_right').src = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
-byId('bot').src = `${RAW_BASE}/invite_bot.png?v=${v}`;
-});
-})();
-</script>
+  <script>
+    (function(){
+      // 원본은 raw.githubusercontent의 current 폴더에서 불러옴
+      const RAW_BASE = 'https://raw.githubusercontent.com/IIMarietteII/AE_Global_Media_Event/main/assets/invite/current';
+      const $ = (id) => document.getElementById(id);
+
+      // config.json 로드 후 updated_at으로 캐시 무력화 & 버튼 링크 주입
+      fetch(`${RAW_BASE}/config.json`, { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : { register_url:'', updated_at: Date.now() })
+        .then(cfg => {
+          const ver = encodeURIComponent(cfg.updated_at || Date.now());
+
+          // Non-MSO (웹/모바일)
+          if ($('top'))        $('top').src        = `${RAW_BASE}/invite_top.png?v=${ver}`;
+          if ($('mid_left'))   $('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
+          if ($('mid_btn'))    $('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
+          if ($('mid_right'))  $('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
+          if ($('bot'))        $('bot').src        = `${RAW_BASE}/invite_bot.png?v=${ver}`;
+          if ($('btn_link')){
+            const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '#';
+            if (url && url !== '#') { $('btn_link').href = url; }
+          }
+
+          // MSO(Outlook) 조건부 주석 내 이미지는 브라우저 DOM에 잡히지 않으므로,
+          // 복사/붙여넣기 시에도 보이도록 미리 속성을 채워 둠 (일부 환경에서는 유지됨)
+          if ($('mso_mid_left'))  $('mso_mid_left').setAttribute('src', `${RAW_BASE}/invite_mid_left.png?v=${ver}`);
+          if ($('mso_mid_btn'))   $('mso_mid_btn').setAttribute('src', `${RAW_BASE}/invite_mid_btn.png?v=${ver}`);
+          if ($('mso_mid_right')) $('mso_mid_right').setAttribute('src', `${RAW_BASE}/invite_mid_right.png?v=${ver}`);
+          if ($('mso_btn_link')){
+            const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '#';
+            if (url && url !== '#') $('mso_btn_link').setAttribute('href', url);
+          }
+        })
+        .catch(() => {
+          const v = Date.now();
+          if ($('top'))        $('top').src        = `${RAW_BASE}/invite_top.png?v=${v}`;
+          if ($('mid_left'))   $('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
+          if ($('mid_btn'))    $('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
+          if ($('mid_right'))  $('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
+          if ($('bot'))        $('bot').src        = `${RAW_BASE}/invite_bot.png?v=${v}`;
+        });
+    })();
+  </script>
 </body>
 </html>
