@@ -1,270 +1,82 @@
-# index.html (관리자 업로드 — 고정 레포 설정)
-
-```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Invite 이미지 업로드(관리자)</title>
-  <style>
-    :root { --w: 640px; }
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif; line-height: 1.45; padding: 20px; background:#fafafa; }
-    .wrap { max-width: 980px; margin: 0 auto; }
-    h1 { font-size: 22px; margin: 0 0 12px; }
-    fieldset { border: 1px solid #ddd; border-radius: 12px; padding: 16px; background:#fff; }
-    legend { font-weight: 800; padding: 0 6px; }
-    label { display:block; margin: 8px 0 6px; font-weight:600; }
-    input[type="password"], input[type="url"], input[type="file"] { width: 100%; padding: 10px; border:1px solid #ccc; border-radius: 10px; }
-    button { cursor: pointer; border: 0; background: #111; color: #fff; padding: 10px 14px; border-radius: 10px; font-weight: 700; }
-    button.secondary { background: #555; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .preview-wrap { display:flex; justify-content:center; align-items:flex-start; padding: 12px; background:#f8f8f8; border-radius:12px; overflow:auto; }
-    .invite { width: var(--w); max-width: 100%; }
-    .status { white-space: pre-wrap; font-family: ui-monospace, Menlo, Consolas, monospace; background:#111; color:#eee; padding:12px; border-radius:8px; height: 140px; overflow:auto; }
-    .hint { color:#666; font-size:12px; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Invite 이미지 업로드(관리자)</title>
+<style>
+:root { --w: 640px; }
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif; line-height: 1.45; padding: 20px; background:#fafafa; }
+.wrap { max-width: 980px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 12px; }
+fieldset { border: 1px solid #ddd; border-radius: 12px; padding: 16px; background:#fff; }
+legend { font-weight: 800; padding: 0 6px; }
+label { display:block; margin: 8px 0 6px; font-weight:600; }
+input[type="password"], input[type="url"], input[type="file"] { width: 100%; padding: 10px; border:1px solid #ccc; border-radius: 10px; }
+button { cursor: pointer; border: 0; background: #111; color: #fff; padding: 10px 14px; border-radius: 10px; font-weight: 700; }
+button.secondary { background: #555; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.preview-wrap { display:flex; justify-content:center; align-items:flex-start; padding: 12px; background:#f8f8f8; border-radius:12px; overflow:auto; }
+.invite { width: var(--w); max-width: 100%; }
+.status { white-space: pre-wrap; font-family: ui-monospace, Menlo, Consolas, monospace; background:#111; color:#eee; padding:12px; border-radius:8px; height: 140px; overflow:auto; }
+.hint { color:#666; font-size:12px; }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Invite 이미지 업로드 → GitHub Pages 반영</h1>
-    <p class="hint">레포: <b>IIMarietteII/AE_Global_Media_Event@main</b> → <code>assets/invite/current</code></p>
+<div class="wrap">
+<h1>Invite 이미지 업로드 → GitHub Pages 반영</h1>
+<p class="hint">레포: <b>IIMarietteII/AE_Global_Media_Event@main</b> → <code>assets/invite/current</code></p>
 
-    <fieldset>
-      <legend>권한</legend>
-      <label>GitHub Personal Access Token (Contents: Read & Write 권한 필요)</label>
-      <input id="token" type="password" placeholder="ghp_… 또는 Fine-grained 토큰" />
-      <div style="display:flex; gap:8px; margin-top:8px;">
-        <button id="saveToken" class="secondary">토큰 저장</button>
-        <button id="clearToken" class="secondary">토큰 삭제</button>
-      </div>
-    </fieldset>
 
-    <fieldset>
-      <legend>버튼 링크(선택)</legend>
-      <label>중앙 버튼 클릭 시 이동할 URL</label>
-      <input id="btnUrl" type="url" placeholder="https://example.com/register" />
-    </fieldset>
+<fieldset>
+<legend>권한</legend>
+<label>GitHub Personal Access Token (Contents: Read & Write 권한 필요)</label>
+<input id="token" type="password" placeholder="ghp_… 또는 Fine-grained 토큰" />
+<div style="display:flex; gap:8px; margin-top:8px;">
+<button id="saveToken" class="secondary">토큰 저장</button>
+<button id="clearToken" class="secondary">토큰 삭제</button>
+</div>
+</fieldset>
 
-    <fieldset>
-      <legend>이미지 5개 선택</legend>
-      <div class="row">
-        <div>
-          <label>Top (invite_top.png)</label>
-          <input id="top" type="file" accept="image/*" />
-        </div>
-        <div>
-          <label>Mid Left (invite_mid_left.png)</label>
-          <input id="midLeft" type="file" accept="image/*" />
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label>Mid Button (invite_mid_btn.png)</label>
-          <input id="midBtn" type="file" accept="image/*" />
-        </div>
-        <div>
-          <label>Mid Right (invite_mid_right.png)</label>
-          <input id="midRight" type="file" accept="image/*" />
-        </div>
-      </div>
-      <div>
-        <label>Bottom (invite_bot.png)</label>
-        <input id="bot" type="file" accept="image/*" />
-      </div>
-    </fieldset>
 
-    <fieldset>
-      <legend>미리보기 & 게시</legend>
-      <div class="preview-wrap"><div class="invite" id="preview"></div></div>
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button id="publish">Publish → GitHub</button>
-        <button id="openInvite" class="secondary">invite.html 열기</button>
-      </div>
-      <div class="status" id="log" aria-live="polite"></div>
-    </fieldset>
-  </div>
+<fieldset>
+<legend>버튼 링크(선택)</legend>
+<label>중앙 버튼 클릭 시 이동할 URL</label>
+<input id="btnUrl" type="url" placeholder="https://example.com/register" />
+</fieldset>
 
-  <template id="tpl">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto; max-width:640px;">
-      <tr><td>
-        <img id="p_top" alt="top" style="display:block; width:100%; height:auto; border:0;" />
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
-          <tr>
-            <td style="padding:0; width:34%;"><img id="p_mid_left" alt="mid left" style="display:block; width:100%; height:auto; border:0;"></td>
-            <td style="padding:0; width:36.333%;">
-              <a id="p_btn_link" href="#" onclick="return false;" style="text-decoration:none; display:block;">
-                <img id="p_mid_btn" alt="참가 등록" style="display:block; width:100%; height:auto; border:0;">
-              </a>
-            </td>
-            <td style="padding:0; width:29.667%;"><img id="p_mid_right" alt="mid right" style="display:block; width:100%; height:auto; border:0;"></td>
-          </tr>
-        </table>
-        <img id="p_bot" alt="bottom" style="display:block; width:100%; height:auto; border:0;" />
-      </td></tr>
-    </table>
-  </template>
 
-  <script>
-    const OWNER='IIMarietteII';
-    const REPO='AE_Global_Media_Event';
-    const BRANCH='main';
-    const PATH='assets/invite/current';
+<fieldset>
+<legend>이미지 5개 선택</legend>
+<div class="row">
+<div>
+<label>Top (invite_top.png)</label>
+<input id="top" type="file" accept="image/*" />
+</div>
+<div>
+<label>Mid Left (invite_mid_left.png)</label>
+<input id="midLeft" type="file" accept="image/*" />
+</div>
+</div>
+<div class="row">
+<div>
+<label>Mid Button (invite_mid_btn.png)</label>
+<input id="midBtn" type="file" accept="image/*" />
+</div>
+<div>
+<label>Mid Right (invite_mid_right.png)</label>
+<input id="midRight" type="file" accept="image/*" />
+</div>
+</div>
+<div>
+<label>Bottom (invite_bot.png)</label>
+<input id="bot" type="file" accept="image/*" />
+</div>
+</fieldset>
 
-    const $ = (s) => document.querySelector(s);
-    const log = (m, type="info") => { const el = $('#log'); el.textContent += (el.textContent?"\n":"") + (type==='error'?'❌ ': type==='ok'?'✅ ':'• ') + m; el.scrollTop = el.scrollHeight; };
 
-    const loadToken = () => { const t = localStorage.getItem('invite_token'); if(t) $('#token').value = t; };
-    const saveToken = () => { localStorage.setItem('invite_token', $('#token').value.trim()); log('토큰 저장됨', 'ok'); };
-    const clearToken = () => { localStorage.removeItem('invite_token'); $('#token').value=''; log('토큰 삭제됨', 'ok'); };
-    $('#saveToken').onclick = saveToken; $('#clearToken').onclick = clearToken; loadToken();
-
-    const files = { top:null, midLeft:null, midBtn:null, midRight:null, bot:null };
-    const ids = Object.keys(files);
-    const mountPreview = () => {
-      const tpl = $('#tpl');
-      const node = tpl.content.cloneNode(true);
-      const map = { top:'p_top', midLeft:'p_mid_left', midBtn:'p_mid_btn', midRight:'p_mid_right', bot:'p_bot' };
-      ids.forEach(id => { const f = files[id]; const img = node.getElementById(map[id]); if(f) img.src = URL.createObjectURL(f); });
-      const link = node.getElementById('p_btn_link');
-      const u = $('#btnUrl').value.trim(); if(u){ link.href=u; link.onclick=null; }
-      const prev = $('#preview'); prev.innerHTML=''; prev.appendChild(node);
-    };
-    ids.forEach(id => { document.getElementById(id).addEventListener('change', e => { files[id]=e.target.files[0]||null; mountPreview(); }); });
-    document.getElementById('btnUrl').addEventListener('input', mountPreview);
-
-    const gh = {
-      async getShaIfExists(path, file, token) {
-        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}/${encodeURIComponent(file)}?ref=${encodeURIComponent(BRANCH)}`;
-        const res = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } });
-        if (res.status === 404) return null;
-        if (!res.ok) throw new Error(`GET sha 실패: ${res.status} ${await res.text()}`);
-        const data = await res.json();
-        return data.sha || null;
-      },
-      async putFile(path, file, b64, token, sha) {
-        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}/${encodeURIComponent(file)}`;
-        const body = { message: `chore(invite): update ${file}`, content: b64, branch: BRANCH };
-        if (sha) body.sha = sha;
-        const res = await fetch(url, { method: 'PUT', headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }, body: JSON.stringify(body) });
-        if (!res.ok) throw new Error(`PUT 실패(${file}): ${res.status} ${await res.text()}`);
-        return res.json();
-      }
-    };
-
-    const readAsUint8 = (file) => new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(new Uint8Array(r.result)); r.onerror = reject; r.readAsArrayBuffer(file); });
-    const toBase64 = (uint8) => { let binary=''; const chunk=0x8000; for(let i=0;i<uint8.length;i+=chunk){ const slice=uint8.subarray(i,i+chunk); binary+=String.fromCharCode.apply(null,slice);} return btoa(binary); };
-
-    document.getElementById('publish').onclick = async () => {
-      try {
-        const token = $('#token').value.trim();
-        const btnUrl = $('#btnUrl').value.trim();
-        if (!token) throw new Error('토큰을 입력하세요.');
-        const names = { top:'invite_top.png', midLeft:'invite_mid_left.png', midBtn:'invite_mid_btn.png', midRight:'invite_mid_right.png', bot:'invite_bot.png' };
-        const uploadList = [];
-        for (const id of Object.keys(names)) { if (!files[id]) { log(`${id} 비어있음 → 건너뜀`, 'info'); continue; } uploadList.push(id); }
-        if (uploadList.length === 0 && !btnUrl) throw new Error('업로드할 이미지나 버튼 URL이 없습니다.');
-        log(`레포: ${OWNER}/${REPO}@${BRANCH} → ${PATH}`);
-
-        for (const id of uploadList) {
-          const filename = names[id];
-          const sha = await gh.getShaIfExists(PATH, filename, token);
-          const uint8 = await readAsUint8(files[id]);
-          const b64 = toBase64(uint8);
-          await gh.putFile(PATH, filename, b64, token, sha);
-          log(`업로드 완료: ${filename}`, 'ok');
-        }
-
-        const cfgObj = { register_url: btnUrl || '', updated_at: new Date().toISOString() };
-        const cfgBytes = new TextEncoder().encode(JSON.stringify(cfgObj, null, 2));
-        const cfgB64 = toBase64(cfgBytes);
-        const cfgSha = await gh.getShaIfExists(PATH, 'config.json', token);
-        await gh.putFile(PATH, 'config.json', cfgB64, token, cfgSha);
-        log('config.json 업데이트', 'ok');
-
-        const root = `https://${OWNER}.github.io/${REPO}`;
-        log(`완료! 보기: ${root}/invite.html`, 'ok');
-        window.open(`${root}/invite.html`, '_blank');
-      } catch (e) { console.error(e); log(String(e.message||e), 'error'); }
-    };
-
-    document.getElementById('openInvite').onclick = () => { window.open(`https://${OWNER}.github.io/${REPO}/invite.html`, '_blank'); };
-
-    mountPreview();
-  </script>
-</body>
+<fieldset>
+<legend>미리보기 & 게시</legend>
+<div class="preview-wrap"><div class="invite" id="preview"></div></div>
 </html>
-```
-
-# invite.html (뷰어 — 동일)
-
-```html
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>초대장</title>
-  <style>
-    :root { --w: 640px; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif; background: #fafafa; }
-    .wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-    .card { width: min(100%, var(--w)); background: #fff; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.08); overflow: hidden; }
-    .inner { padding: 0; }
-    img { display:block; width:100%; height:auto; border:0; }
-    table { width:100%; border-collapse: collapse; }
-    td { padding:0; }
-    a { text-decoration: none; }
-    .foot { text-align:center; color:#777; font-size:12px; padding: 12px 0 4px; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <div class="inner">
-        <img id="top" alt="top" />
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td style="width:34%"><img id="mid_left" alt="mid left" /></td>
-            <td style="width:36.333%">
-              <a id="btn_link" href="#" onclick="return false;">
-                <img id="mid_btn" alt="button" />
-              </a>
-            </td>
-            <td style="width:29.667%"><img id="mid_right" alt="mid right" /></td>
-          </tr>
-        </table>
-        <img id="bot" alt="bottom" />
-      </div>
-      <div class="foot">assets/invite/current의 최신 이미지를 표시합니다.</div>
-    </div>
-  </div>
-
-  <script>
-    (function(){
-      const base = './assets/invite/current';
-      const srcs = {
-        top: `${base}/invite_top.png`,
-        mid_left: `${base}/invite_mid_left.png`,
-        mid_btn: `${base}/invite_mid_btn.png`,
-        mid_right: `${base}/invite_mid_right.png`,
-        bot: `${base}/invite_bot.png`,
-        config: `${base}/config.json`
-      };
-      const byId = (id) => document.getElementById(id);
-      Object.entries({top:'top', mid_left:'mid_left', mid_btn:'mid_btn', mid_right:'mid_right', bot:'bot'}).forEach(([key, id]) => {
-        byId(id).src = srcs[key];
-      });
-
-      fetch(srcs.config, { cache: 'no-store' }).then(r => r.ok ? r.json() : { register_url: '' }).then(cfg => {
-        const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
-        const a = byId('btn_link');
-        if (url) { a.href = url; a.onclick = null; }
-      }).catch(() => {});
-    })();
-  </script>
-</body>
-</html>
-```
