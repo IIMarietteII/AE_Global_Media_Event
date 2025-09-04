@@ -43,19 +43,39 @@ a { text-decoration: none; }
 
 <script>
 (function(){
-const base = './assets/invite/current';
-const srcs = {
-top: `${base}/invite_top.png`,
-mid_left: `${base}/invite_mid_left.png`,
-mid_btn: `${base}/invite_mid_btn.png`,
-mid_right: `${base}/invite_mid_right.png`,
-bot: `${base}/invite_bot.png`,
-config: `${base}/config.json`
-};
-const byId = (id) => document.getElementById(id);
-Object.entries({top:'top', mid_left:'mid_left', mid_btn:'mid_btn', mid_right:'mid_right', bot:'bot'}).forEach(([key, id]) => {
-byId(id).src = srcs[key];
-});
+  // ✅ raw.githubusercontent.com 경로 사용 (프로젝트 페이지 경로 이슈 회피)
+  const RAW_BASE = 'https://raw.githubusercontent.com/IIMarietteII/AE_Global_Media_Event/main/assets/invite/current';
+  const byId = (id) => document.getElementById(id);
+
+  // config.json에서 updated_at을 버전 파라미터로 써서 캐시 무력화
+  const cfgUrl = `${RAW_BASE}/config.json`;
+  fetch(cfgUrl, { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : { register_url: '', updated_at: Date.now() })
+    .then(cfg => {
+      const ver = encodeURIComponent(cfg.updated_at || Date.now());
+
+      byId('top').src        = `${RAW_BASE}/invite_top.png?v=${ver}`;
+      byId('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${ver}`;
+      byId('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${ver}`;
+      byId('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${ver}`;
+      byId('bot').src        = `${RAW_BASE}/invite_bot.png?v=${ver}`;
+
+      const a = byId('btn_link');
+      const url = (cfg && cfg.register_url) ? String(cfg.register_url) : '';
+      if (url) { a.href = url; a.onclick = null; }
+    })
+    .catch(() => {
+      // config.json 실패해도 이미지만이라도 보이도록
+      const v = Date.now();
+      byId('top').src        = `${RAW_BASE}/invite_top.png?v=${v}`;
+      byId('mid_left').src   = `${RAW_BASE}/invite_mid_left.png?v=${v}`;
+      byId('mid_btn').src    = `${RAW_BASE}/invite_mid_btn.png?v=${v}`;
+      byId('mid_right').src  = `${RAW_BASE}/invite_mid_right.png?v=${v}`;
+      byId('bot').src        = `${RAW_BASE}/invite_bot.png?v=${v}`;
+    });
+})();
+</script>
+
 
 
 // 버튼 링크 구성
@@ -67,4 +87,5 @@ if (url) { a.href = url; a.onclick = null; }
 })();
 </script>
 </body>
+
 </html>
